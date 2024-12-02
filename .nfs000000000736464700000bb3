@@ -1,5 +1,0 @@
-*.log
-
-scripts/__pycache__/
-
-/pipeline/
