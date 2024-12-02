@@ -9,3 +9,4 @@ pipeline/
 
 toy_data/tomograms/Tomo1/Tomo1_bin4.map
 toy_data/tomograms/Tomo1/membranes/
+!toy_data/tomograms/Tomo1/membranes/.gitkeep
