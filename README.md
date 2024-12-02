@@ -1,5 +1,5 @@
-# Important Note
-This is a localized fork of Membrain-v1
+# Note
+This is a localized fork of Membrain-v1. Original repo: https://github.com/CellArchLab/MemBrain .
 
 # MemBrain-v1
 ### Automated detection of membrane-bound proteins
@@ -10,7 +10,7 @@ This is a localized fork of Membrain-v1
 
 <br>
 
-Original repo: https://github.com/CellArchLab/MemBrain .
+
 
 
 MemBrain is a pipeline for the automated detection of membrane-bound proteins in cryo-electron tomograms. It utilizes 
