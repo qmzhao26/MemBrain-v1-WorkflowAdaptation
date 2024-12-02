@@ -1,8 +1,7 @@
 # Important Note
-This is MemBrain v1 -- you might be actually looking for MemBrain v2, which adds more capabilities, including segmentation of membranes.
-If this is the case, please check out [MemBrain-seg](https://github.com/teamtomo/membrain-seg) on the #TeamTomo Github.
+This is a localized fork of Membrain-v1
 
-# MemBrain
+# MemBrain-v1
 ### Automated detection of membrane-bound proteins
 
 <p align="center">
@@ -11,25 +10,14 @@ If this is the case, please check out [MemBrain-seg](https://github.com/teamtomo
 
 <br>
 
-This is the code accompanying our publication https://www.biorxiv.org/content/10.1101/2022.03.01.480844v1?rss=1 .
+Original repo: https://github.com/CellArchLab/MemBrain .
 
-If you're encountering any problems when using MemBrain, feel free to reach out to us:
-lorenz.lamm@helmholtz-muenchen.de
 
 MemBrain is a pipeline for the automated detection of membrane-bound proteins in cryo-electron tomograms. It utilizes 
 the geometry of a pre-segmented membrane to reduce the complexity of the detection task. As a result, MemBrain only requires a small amount of 
 annotated data (even one single annotated membrane can be enough!) and can generalize well to unseen tomograms and membranes.
 
-In this repository, we provide all code that is necessary to either
-- train a MemBrain model from scratch, or
-- predict particle locations on segmented membranes using a pre-trained model (see folder `./models`), or
-- just try MemBrain out with our example dataset.
-
-
-
-You can learn more about the workflow of our method [here](https://github.com/CellArchLab/MemBrain/blob/master/workflow.md).
-
-For user instructions, jump [here](#instructions). For instructions on how to use our example dataset, jump [here](#example-data). For trouble shooting, jump [here](#troubleshooting).
+pre-trained model (see folder `./models`)
 
 
 
@@ -170,23 +158,8 @@ This will automatically unzip the compressed membrane files, download the raw to
 
 ### Adjustments of config.py
 Ideally, this toy example should work without adjusting config file values. However, if problems with the paths arise, changing to absolute paths might help:
-- PROJECT_NAME (can also stay the same)
+- PROJECT_NAME
 - PROJECT_DIRECTORY (this is where all outputs of MemBrain are stored; directory should exist beforehand)
 - TOMO_DIR (where your toy_data tomograms are stored, e.g., `/path/to/MemBrain/folder/MemBrain/toy_data/tomograms`)
-- USE_GPU (do you have GPU available? This will speed up training / inference)
+- USE_GPU
 
-### Script execution
-The remaining instructions for this toy dataset are analogous to the common script executions, see [here](#setting-up-the-environment).
-
-
-<a name="troubleshooting"></a>
-## Troubleshooting
-- Loss is very high (1e2 and above): Most likely the labels have not been set correctly. Example problem for Membranorama: Membranorama stores positions based on actual pixel spacing, which it receives from a tomograms header. So if the tomogram’s header has pixel spacing 1.0 (often the case after some preprocessing with Python, e.g. CryoCARE), the Membranorama output positions will not show the exact positions w.r.t. pixel spacing.
-Possible solutions:
-  - Adjust Membranorama positions (multiply by pixel spacing)
-  - Set tomogram pixel spacing to 1.0 in MemBrain pipeline (will lead to further adjustments, e.g. when choosing particle radius)
-
-- Error ```    origin_pos_x = [point[0] for point in point_list]
-TypeError: 'NoneType' object is not subscriptable```
-This is an issue with the picked positions: Either, you did not click on the corresponding side of a membrane in the graphical user interface. Or (more likely), you are working on a machine that does not support the display of graphical user interfaces.
-Solution: Set the parameter "PICK_ON_BOTH_SIDES" in config.py to True. This will skip the manual side picking step.
