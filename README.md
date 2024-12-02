@@ -23,7 +23,6 @@ pre-trained model (see folder `./models`)
 
 <a name="instructions"></a>
 ## User instructions
-The following instructions show the required data structure and give hints on how to properly use the scripts.
 
 ### Data structure
 MemBrain relies on a specific data structure, where tomograms, membrane segmentations, membrane meshes, and ground truth positions should be stored: (an exemplary data structure can also be found in our [example dataset](#example-data))
@@ -64,8 +63,8 @@ tomograms
 ### Setting up the environment
 For the correct Python environment, set up a virtual environment of Python 3.8 (e.g., using [miniconda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/linux.html)). When using Miniconda, the following commands can be performed to create a Python environment, after Miniconda is installed:
 ```
-git clone https://github.com/CellArchLab/MemBrain.git
-cd MemBrain
+git clone https://github.com/qmzhao26/MemBrain-v1-WorkflowAdaptation
+cd MemBrain-v1-WorkflowAdaptation
 conda env create -f MemBrain_requirements.yml
 conda activate MemBrain
 ```
@@ -146,11 +145,10 @@ python step5a_extract_orientations.py
 
 ## Example data
 
-toy_data: containing 3 membranes from one tomogram (https://elifesciences.org/articles/53740). Instructions how to use it can be found here:
+toy_data: containing 3 membranes from one tomogram (https://elifesciences.org/articles/53740). 
 
 ### Data preparation
-The corresponding ground truth data positions, as well as membrane meshes are provided without requiring further processing.
-For membrane segmentations, and the raw tomogram, please open a terminal in the MemBrain folder and run
+run
 
 ```sh prepare_toy_dataset.sh```
 
