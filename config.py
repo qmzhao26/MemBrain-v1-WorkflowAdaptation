@@ -1,7 +1,7 @@
 ## Setting the paths
 
-PROJECT_NAME = 'sample_pipeline'
-PROJECT_DIRECTORY = '../../pipeline' # within this folder, the pipeline folder structure will be created
+PROJECT_NAME = 'test3_pipeline'
+PROJECT_DIRECTORY = './pipeline' # within this folder, the pipeline folder structure will be created
 TOMO_DIR = './toy_data/tomograms' # path of directory containing the data (Tomo1, Tomo2, ...)
 
 ## General project settings
@@ -13,13 +13,14 @@ USE_GPU = True
 PICK_ON_BOTH_SIDES = True # This should be True, if you are working on a cluster without the possibility to use
                             # graphical user interfaces (from matplotlib)
 TEST_ALL = False  # Should all membranes be assigned to the test set?
-GT_AVAIL = True  # Is ground truth data available?
+GT_AVAIL = False  # Is ground truth data available?
 
 
 ## Protein details
 
-MEMBRANORAMA_XMLS = True # This has no usage in current version (tuning)
-USE_GT_ORIENTATIONS = True
+MEMBRANORAMA_XMLS = False # This has no usage in current version (tuning)
+# USE_GT_ORIENTATIONS = False
+
 # Protein tokens:
 # For each protein you want to detect, specify a dictionary entry. The list of names corresponds to possible namings in the membranorama
 # file. E.g. 'PSII': ['PSII', 'PS2'] means that for protein 'PSII', both 'PSII' and 'PS2' tokens are accepted.
@@ -72,7 +73,7 @@ if TEST_ALL:
 #       - a list of protein tokens --> minimal distances to any of the protein tokens in the list are computed
 # For each entry in the list, the network generates a separate output, so you can have multiple heatmaps for multiple
 # particle classes.
-TRAINING_PARTICLE_DISTS = [['PSII', 'UK'], 'b6f']
+# TRAINING_PARTICLE_DISTS = [['PSII', 'UK'], 'b6f']
 TRAINING_PARTICLE_DISTS = [['PSII', 'UK']]
 
 LOG_CLUSTERING_STATS = True # Flag whether or not to log clustering statistics during training

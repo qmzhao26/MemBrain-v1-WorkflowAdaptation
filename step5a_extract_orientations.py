@@ -5,6 +5,12 @@ from scripts import particle_orientation
 from utils.parameters import ParameterSettings
 from utils import data_utils, process_meshes, star_utils
 import os
+import mrcfile
+
+script_dir = os.path.dirname(os.path.abspath(__file__))
+os.chdir(script_dir)
+print("Current working directory changed to:", os.getcwd())
+
 
 def adjust_paths_to_windows_machine(path_list):
     paths = [pathfile.replace('/scicore/home/engel0006/GROUP/pool-engel/', 'Z:\\') for pathfile in path_list]
@@ -44,12 +50,15 @@ def transform_to_membranorama_angles(positions, angles, orientations, mesh_path)
         tri_id = mesh.find_closest_triangle(pos)
         triangle = mesh.get_triangle(tri_id)
         plane_mat = triangle.get_plane_matrix()
+        print(f"plane_mat{tri_id}:", plane_mat)
         vec = orientation
         vec = np.dot(plane_mat, vec)
+        print(f"vec{tri_id}:", vec)
         beta = np.arctan2(vec[0], vec[1])
         beta = np.rad2deg(beta)%180 - 121.1
         beta = np.deg2rad(beta)
-        new_angles.append(np.array((beta, 0, 0)))
+        # new_angles.append(np.array((beta, 0, 0)))
+        new_angles.append(vec)
         tri_ids.append(tri_id)
     return np.stack(new_angles), np.stack(tri_ids)
 
@@ -61,11 +70,14 @@ def convert_orientations_to_membranorama(star_file, out_dir_membranorama):
     position_paths = star_dict['clusterPath']
     out_dir = out_dir_membranorama
 
+    segmrcpaths = star_dict['segPath']
+
     new_obj_paths = []
     for obj_path in obj_paths:
         out_file = os.path.join(out_dir, 'meshes', os.path.basename(obj_path))
         mesh = process_meshes.read_obj_file_to_triangles(obj_path)
         if np.max(mesh.vertices) < 1000.:
+            print("warning!! mesh.vertices* 14.08")
             mesh.vertices = (np.array(mesh.vertices) * 14.08).tolist()
         mesh.store_in_file(out_file)
         new_obj_paths.append(out_file)
@@ -81,23 +93,34 @@ def convert_orientations_to_membranorama(star_file, out_dir_membranorama):
         new_tomo_paths.append(out_file)
         if os.path.isfile(out_file):
             continue
-        tomo = data_utils.load_tomogram(tomo_path)
-        data_utils.store_tomogram_valid_header(out_file, tomo)
+        tomo, header_dict = data_utils.load_tomogram(tomo_path, return_header=True)
+        data_utils.store_tomogram(out_file, tomo, header_dict=header_dict)
     tomo_paths = adjust_paths_to_windows_machine(new_tomo_paths)
 
-    for tomo_path, obj_path, obj_path_orig, pos_path in zip(tomo_paths, obj_paths, obj_paths_bkp, position_paths):
+    for tomo_path, obj_path, obj_path_orig, pos_path, segmrcpath in zip(tomo_paths, obj_paths, obj_paths_bkp, position_paths, segmrcpaths):
+
+        with mrcfile.open(segmrcpath, permissive=True) as mrc:
+            x_pixel_size = mrc.header.cella.x / mrc.header.nx
+            y_pixel_size = mrc.header.cella.y / mrc.header.ny
+            z_pixel_size = mrc.header.cella.z / mrc.header.nz
+            origin = mrc.header.origin
+        translation = np.array([origin['x'], origin['y'], origin['z']], dtype=np.float64)
+        # translation = np.array((0, 0, 0))
+
         positions = data_utils.get_csv_data(pos_path)
-        angles, tri_ids = transform_to_membranorama_angles(positions[:, :3] * 3.52, positions[:, -3:], positions[:, 3:6], obj_path_orig)
+        angles, tri_ids = transform_to_membranorama_angles(positions[:, :3] * 3.52 + translation, positions[:, -3:], positions[:, 3:6], obj_path_orig)
         tri_ids = np.expand_dims(tri_ids, 1)
-        pos_dict = {'PSII': np.concatenate((positions[:, :3] * 3.52,tri_ids), axis=1)}
+        pos_dict = {'PSII': np.concatenate((positions[:, :3] * 3.52 + translation, tri_ids), axis=1)}
+        # pos_dict = {'PSII': np.concatenate((positions[:, :3],tri_ids), axis=1)}
         ori_dict = {'PSII': angles}
         particle_model_dict = {key: 'Z:\\Spinach_project\\structures\\C2_spinach_14A_centered.mrc' for key in pos_dict.keys()}
         out_xml = os.path.join(out_dir, os.path.basename(obj_path.replace('\\', '/'))[:-3] + 'xml')
         mesh = process_meshes.read_obj_file_to_triangles(obj_path_orig)
         if np.max(mesh.vertices) < 1000.:
             mesh.vertices = (np.array(mesh.vertices) * 14.08)
+            print("warning!! mesh.vertices* 14.08")
         mean_pos = np.mean(mesh.vertices, axis=0)
-        data_utils.save_as_membranorama_xml_with_header(out_xml, pos_dict, obj_path, tomo_path, particle_model_dict, ori_dict=ori_dict, CameraTarget=mean_pos)
+        data_utils.save_as_membranorama_xml(out_xml, pos_dict, ori_dict=ori_dict)
 
 
 def main():
@@ -108,7 +131,9 @@ def main():
     out_dir = os.path.join(cluster_dir, 'with_orientation')
     settings = ParameterSettings(pos_star_file, is_cluster_center_file=True)
     out_star_file = particle_orientation.compute_all_orientations(cluster_dir, settings, out_dir, visualize=False)
-    out_dir_membranorama = os.path.join(cluster_dir, 'with_orientation_membranorama')
+
+
+    out_dir_membranorama = os.path.join(cluster_dir, 'with_orientation_visualize')
     convert_orientations_to_membranorama(out_star_file, out_dir_membranorama)
 
 

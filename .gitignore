@@ -1,0 +1,10 @@
+*.log
+
+scripts/__pycache__/
+utils/__pycache__/
+__pycache__/
+
+pipeline/
+
+toy_data/tomograms/Tomo1/Tomo1_bin4.map
+toy_data/tomograms/Tomo1/membranes/

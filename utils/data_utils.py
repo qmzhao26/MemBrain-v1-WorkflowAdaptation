@@ -127,7 +127,8 @@ def save_as_membranorama_xml(out_file, pos_dict, ori_dict=None):
         pgs.append(pg)
     root.append(pgs)
     with open(out_file, 'w') as out_f:
-        out_f.write(ET.tostring(root, pretty_print=True))
+        xml_string = ET.tostring(root, pretty_print=True).decode('utf-8')
+        out_f.write(xml_string)
 
 
 def get_csv_data(csv_path, delimiter=',', with_header=False, return_header=False):
@@ -875,6 +876,11 @@ def store_tomogram(filename, tomogram, header_dict=None):
     if tomogram.dtype != np.int8:
         tomogram = np.array(tomogram, dtype=np.float32)
     tomogram = np.transpose(tomogram, (2,1,0))
+
+    dir_name = os.path.dirname(filename)
+    if dir_name and not os.path.exists(dir_name):
+        os.makedirs(dir_name)
+
     with mrcfile.new(filename, overwrite=True) as mrc:
         mrc.set_data(tomogram)
         if header_dict is not None:

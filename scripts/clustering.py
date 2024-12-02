@@ -13,7 +13,7 @@ from time import time
 from config import *
 
 class MeanShift_clustering(object):
-    def __init__(self, star_file, out_dir, detection_by_classification=False, pos_thres=-3.0):
+    def __init__(self, star_file, out_dir, detection_by_classification=False, pos_thres=-5.2):
         self.recluster_thres = None
         self.recluster_bw = None
         self.star_file = star_file

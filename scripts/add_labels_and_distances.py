@@ -398,4 +398,5 @@ def add_labels_and_distances(star_file, project_directory, membranorama_xmls=Fal
     if membranorama_xmls:
         convert_membranorama_gt_to_csv(project_directory, prot_tokens, settings,
                                        convert_orientation=particle_orientations)
-    compute_distances_to_gt(star_file, particle_orientations, prot_shapes)
+    if GT_AVAIL:
+        compute_distances_to_gt(star_file, particle_orientations, prot_shapes)

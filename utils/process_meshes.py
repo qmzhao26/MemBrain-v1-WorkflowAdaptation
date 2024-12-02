@@ -1,4 +1,5 @@
 import numpy as np
+import os
 
 
 # from preprocessing import create_DL_data as create_DL_data
@@ -21,15 +22,30 @@ class Mesh(object):
 
     def get_triangle(self, id):
         combo = self.triangle_combos[int(id)]
+        # print("get_triangle", combo[0] - 1, combo[1] - 1, combo[2] - 1)
         triangle = Triangle(self.vertices[combo[0] - 1], self.vertices[combo[1] - 1], self.vertices[combo[2] - 1])
         return triangle
 
     def find_closest_triangle(self, position):
         distances = 1000 * np.ones(len(self))
+        # print("mesh vertices num:", len(self.vertices))
         for i in range(len(self)):
+            # print("find_closest_triangle",len(self), len(self.triangle_combos), i)
             cur_triangle = self.get_triangle(i)
             distances[i] = np.linalg.norm(cur_triangle.get_center_position() - position)
         return np.argmin(distances)
+    
+    def store_in_file(self, outputfilepath):
+        dir_name = os.path.dirname(outputfilepath)
+        if dir_name and not os.path.exists(dir_name):
+            os.makedirs(dir_name)
+
+        with open(outputfilepath, 'w') as obj_file:
+            for vertex in self.vertices:
+                obj_file.write(f"v {vertex[0]} {vertex[1]} {vertex[2]}\n")
+            
+            for combo in self.triangle_combos:
+                obj_file.write(f"f {combo[0]} {combo[1]} {combo[2]}\n")
 
 
 class Triangle(object):

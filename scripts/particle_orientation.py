@@ -37,6 +37,7 @@ def get_single_cluster_orientation(points, angles, return_euler_angles=True):
 
         # polar coordinates give us the angle
         angle = np.rad2deg(np.arctan2(pca_vec[0], pca_vec[1])) * -1 + 90
+        
         # angle = np.rad2deg(np.arccos(np.dot(pca_vec[0], pca_vec[1])))
         # angle = 0
         return pca_vec_BU, angle
