@@ -1,4 +1,5 @@
 *.log
+.nfs*
 
 scripts/__pycache__/
 utils/__pycache__/
