@@ -146,7 +146,7 @@ python step5a_extract_orientations.py
 
 ## Example data
 
-For testing the functionality of MemBrain, we provide a toy dataset, containing 3 membranes from one tomogram (https://elifesciences.org/articles/53740). Instructions how to use it can be found here:
+toy_data: containing 3 membranes from one tomogram (https://elifesciences.org/articles/53740). Instructions how to use it can be found here:
 
 ### Data preparation
 The corresponding ground truth data positions, as well as membrane meshes are provided without requiring further processing.
