@@ -1,5 +1,5 @@
 # Note
-This is a localized fork of Membrain-v1. Original repo: https://github.com/CellArchLab/MemBrain .
+This is a localized and bug-fixed fork of Membrain-v1. Original repo: https://github.com/CellArchLab/MemBrain .
 
 # MemBrain-v1
 ### Automated detection of membrane-bound proteins
